@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Treasure×MDワールド式読解学習アプリ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-link {
+            background: #f0f0f0;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .btn-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .step-card.user-input {
+            border-left-color: #2196F3;
+        }
+
+        .step-card.ai-step {
+            border-left-color: #764ba2;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        textarea {
+            min-height: 100px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea:disabled {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .button-group button {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .prompt-container {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .prompt-container p {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .prompt-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            min-height: 150px;
+            margin-bottom: 10px;
+            background: white;
+            resize: vertical;
+        }
+
+        .ai-response-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 14px;
+            min-height: 120px;
+            resize: vertical;
+            background: white;
+        }
+
+        .response-display {
+            background: #f0f7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            color: #333;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .cycle-details {
+            margin-bottom: 20px;
+        }
+
+        .cycle-details summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: #667eea;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 5px;
+            user-select: none;
+        }
+
+        .cycle-details summary:hover {
+            background: #e8f1ff;
+        }
+
+        .cycle-details[open] summary {
+            background: #e8f1ff;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .cycle-content {
+            padding: 20px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+        }
+
+        .choice-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .choice-button {
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .choice-button:hover {
+            border-color: #667eea;
+            background: #f0f7ff;
+        }
+
+        .choice-button.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .choice-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 22px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-group button {
+                width: 100%;
+            }
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #667eea;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .export-section {
+            background: #f0f7ff;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .export-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .icon {
+            font-size: 18px;
+        }
+
+        .hint {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #856404;
+            margin: 15px 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 30px;
+            font-size: 14px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .book-input-section {
+            background: #f0f7ff;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .book-input-section label {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .book-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .book-input-group input {
+            flex: 1;
+        }
+
+        .book-input-group button {
+            min-width: 120px;
+        }
+
+        @media (max-width: 768px) {
+            .book-input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🎓 New Treasure×MDワールド式読解学習アプリ</h1>
+            <p>どんな書籍でも、対話を通じて深く読解できるアプリです。本文は一切パースせず、あなたの引用と疑問、そしてAI（Claudian）との対話のみで学習を進めます。</p>
+        </header>
+
+        <!-- 書籍名入力セクション -->
+        <div class="card book-input-section">
+            <label>📚 読む書籍を指定してください</label>
+            <p style="color: #666; font-size: 13px; margin-bottom: 15px;">新しい書籍で学習を開始する場合は、ここで書籍名を入力してください。</p>
+            <div class="book-input-group">
+                <input type="text" id="bookNameInput" placeholder="例）LIFE SHIFT2 100年時代の行動戦略" />
+                <button onclick="updateBookName()">📖 この書籍で開始</button>
+            </div>
+            <p style="color: #667eea; font-weight: 600; margin-top: 10px;">現在の書籍: <span id="currentBookName">未設定</span></p>
+        </div>
+
+        <!-- Phase 1: 導入 -->
+        <div class="card">
+            <h2><span class="icon">📍</span> Phase 1: 導入（1回のみ）</h2>
+
+            <!-- ②入力：引用 -->
+            <div class="step-card user-input">
+                <label style="font-size: 15px;">② インスパイアされた箇所を入力</label>
+                <p style="color: #666; font-size: 13px; margin-bottom: 10px;">本を読んでいて、心に留まった・面白いと感じた引用文を正確に入力してください。</p>
+                <textarea id="phase1Citation" placeholder="例）&quot;機械的なアルゴリズムには作成できない新しい役割や職業が出現する&quot;"></textarea>
+                <button onclick="savePhase1Citation()">💾 引用を保存</button>
+            </div>
+
+            <!-- ③AI：コメント -->
+            <div class="step-card ai-step">
+                <label style="font-size: 15px;">🤖 ③ AIが引用についてコメント</label>
+                <div id="phase1AIPrompt"></div>
+                <div id="phase1AIResponse"></div>
+            </div>
+
+            <!-- ④入力：疑問 -->
+            <div class="step-card user-input">
+                <label style="font-size: 15px;">④ この引用から生じた疑問を入力</label>
+                <p style="color: #666; font-size: 13px; margin-bottom: 10px;">引用を読んで、何が疑問に思いましたか？</p>
+                <textarea id="phase1Question" placeholder="例）それでは、人間にしかできない役割や職業とは、具体的には何なのか？"></textarea>
+                <button onclick="savePhase1Question()">💾 疑問を保存</button>
+            </div>
+        </div>
+
+        <!-- Phase 2 導入：⑤AI回答 -->
+        <div class="card" id="phase2IntroContainer" style="display: none;">
+            <h2><span class="icon">🌍</span> Phase 2 導入: MDワールドへの招待（1回のみ）</h2>
+
+            <div class="step-card ai-step">
+                <label style="font-size: 15px;">🤖 ⑤ AIが④の疑問に答える（オープン回答）</label>
+                <div id="phase2IntroPrompt"></div>
+                <div id="phase2IntroResponse"></div>
+            </div>
+        </div>
+
+        <!-- Phase 2 ループ：⑥〜⑩ -->
+        <div id="loopsContainer"></div>
+
+        <!-- エクスポート -->
+        <div class="card export-section">
+            <h3>📥 学習記録をObsidianノートへエクスポート</h3>
+            <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                これまでの学習記録をMarkdown形式で出力して、Obsidian vaultに保存できます。frontmatter付き、見出し・引用ブロック構造で整形されます。
+            </p>
+            <div class="button-group">
+                <button onclick="exportToClipboard()">📋 Markdownをコピー</button>
+                <button onclick="downloadMarkdown()">⬇️ .mdファイルをダウンロード</button>
+            </div>
+            <p style="color: #666; font-size: 13px; margin-top: 15px;">
+                💡 ダウンロードしたファイル（<code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">{書籍名}_読解学習記録_{番号}.md</code>）は、適切なフォルダ（例：<code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">書籍/{書籍名}/</code>）に手動で配置してください。
+            </p>
+        </div>
+
+        <!-- リセットボタン -->
+        <div style="text-align: center; margin-top: 30px;">
+            <button onclick="resetAll()" style="background: #ff6b6b; padding: 10px 20px;">🔄 すべての入力をリセット</button>
+            <p style="color: #999; font-size: 12px; margin-top: 10px;">（注意：この操作は取り消せません）</p>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // グローバル状態管理
+        // ========================================
+        const STORAGE_KEY = 'rpmd-reading-sessions';
+        const DEFAULT_BOOK_NAME = 'LIFE SHIFT2 100年時代の行動戦略';
+
+        let state = {
+            bookName: DEFAULT_BOOK_NAME,
+            sessions: {}, // { [bookName]: { phase1, phase2Intro, loops, recordNumber } }
+        };
+
+        // 現在のセッション・キーを取得
+        function getSessionKey() {
+            return state.bookName || DEFAULT_BOOK_NAME;
+        }
+
+        // 書籍用のプロンプトコンテキストを生成
+        function getBookContext() {
+            const bookName = getSessionKey();
+            return `書籍『${bookName}』の内容を踏まえて、以下の質問に答えてください。
+
+⚠️ 注意：統計数値は概数として扱い、断定を避けてください。`;
+        }
+
+        // 現在のセッションを取得（初期化）
+        function getCurrentSession() {
+            const key = getSessionKey();
+            if (!state.sessions[key]) {
+                state.sessions[key] = {
+                    recordNumber: 1,
+                    phase1: {
+                        citation: '',
+                        aiComment: '',
+                        question: '',
+                        phase1AIConfirmed: false,
+                    },
+                    phase2Intro: {
+                        response: '',
+                        phase2IntroConfirmed: false,
+                    },
+                    loops: [],
+                };
+            }
+            return state.sessions[key];
+        }
+
+        // ========================================
+        // 初期化・復元
+        // ========================================
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    state = JSON.parse(saved);
+                } catch (e) {
+                    console.error('Failed to load state:', e);
+                    state = { bookName: DEFAULT_BOOK_NAME, sessions: {} };
+                }
+            } else {
+                state = { bookName: DEFAULT_BOOK_NAME, sessions: {} };
+            }
+            // 初回起動時にデフォルト書籍のセッションを作成
+            getCurrentSession();
+            updateBookNameDisplay();
+            renderAll();
+        }
+
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function updateBookName() {
+            const input = document.getElementById('bookNameInput').value.trim();
+            if (!input) {
+                alert('書籍名を入力してください');
+                return;
+            }
+            state.bookName = input;
+            // 新しい書籍のセッションを初期化（存在していれば復元、なければ新規作成）
+            getCurrentSession();
+            saveState();
+            updateBookNameDisplay();
+            document.getElementById('bookNameInput').value = '';
+            renderAll();
+        }
+
+        function updateBookNameDisplay() {
+            const display = document.getElementById('currentBookName');
+            if (display) {
+                display.textContent = state.bookName || DEFAULT_BOOK_NAME;
+            }
+        }
+
+        // ========================================
+        // Phase 1: 引用入力
+        // ========================================
+        function savePhase1Citation() {
+            const citation = document.getElementById('phase1Citation').value.trim();
+            if (!citation) {
+                alert('引用を入力してください');
+                return;
+            }
+            const session = getCurrentSession();
+            session.phase1.citation = citation;
+            session.phase1.aiComment = ''; // リセット
+            session.phase1.phase1AIConfirmed = false;
+            saveState();
+            renderPhase1AI();
+        }
+
+        // ========================================
+        // Phase 1: ③AIコメント（プロンプト生成→貼り付け）
+        // ========================================
+        function renderPhase1AI() {
+            const session = getCurrentSession();
+            const container = document.getElementById('phase1AIPrompt');
+            const responseContainer = document.getElementById('phase1AIResponse');
+
+            if (!session.phase1.citation) {
+                container.innerHTML = '';
+                responseContainer.innerHTML = '';
+                return;
+            }
+
+            if (!session.phase1.phase1AIConfirmed) {
+                // プロンプト入力モード
+                const bookContext = getBookContext();
+                const prompt = `${bookContext}
+
+【ユーザーが本を読んでいて心に留まった引用文】
+"${session.phase1.citation}"
+
+この引用文について、簡潔で洞察的なコメントを1〜2段落でお願いします。以下の観点を含めてください：
+1. この引用が書籍全体の中でどの位置づけか
+2. なぜこの引用が重要な意味を持つのか
+3. 読者がさらに考えるきっかけとなる視点`;
+
+                container.innerHTML = `
+                    <div class="prompt-container">
+                        <p>📋 以下のプロンプトをコピーして、Claudianチャットに貼り付けてください：</p>
+                        <textarea class="prompt-textarea" readonly>${prompt}</textarea>
+                        <button onclick="copyToClipboard(this.previousElementSibling)">📋 プロンプトをコピー</button>
+                    </div>
+                    <div class="form-group">
+                        <p style="color: #666; font-size: 13px; margin-bottom: 10px;">Claudianの返信をここに貼り付けてください：</p>
+                        <textarea class="ai-response-input" id="phase1AIInput" placeholder="AIの返信を貼り付けてください..."></textarea>
+                        <button onclick="confirmPhase1AI()">✅ AIコメントを確定</button>
+                    </div>
+                `;
+            } else {
+                // 確定後：読み取り専用表示
+                container.innerHTML = '';
+                responseContainer.innerHTML = `
+                    <div class="response-display">
+                        <strong style="color: #667eea;">🤖 AIのコメント</strong>
+                        <div style="margin-top: 10px;">${session.phase1.aiComment}</div>
+                    </div>
+                    <button onclick="editPhase1AI()" style="margin-top: 10px;">✏️ 編集</button>
+                `;
+            }
+        }
+
+        function confirmPhase1AI() {
+            const session = getCurrentSession();
+            const input = document.getElementById('phase1AIInput').value.trim();
+            if (!input) {
+                alert('AIの返信を入力してください');
+                return;
+            }
+            session.phase1.aiComment = input;
+            session.phase1.phase1AIConfirmed = true;
+            saveState();
+            renderPhase1AI();
+        }
+
+        function editPhase1AI() {
+            const session = getCurrentSession();
+            session.phase1.phase1AIConfirmed = false;
+            saveState();
+            renderPhase1AI();
+        }
+
+        // ========================================
+        // Phase 1: 疑問入力
+        // ========================================
+        function savePhase1Question() {
+            const session = getCurrentSession();
+            const question = document.getElementById('phase1Question').value.trim();
+            if (!question) {
+                alert('疑問を入力してください');
+                return;
+            }
+            if (!session.phase1.phase1AIConfirmed) {
+                alert('先にAIコメントを確定してください');
+                return;
+            }
+            session.phase1.question = question;
+            saveState();
+
+            // Phase 2 導入を表示
+            showPhase2Intro();
+        }
+
+        // ========================================
+        // Phase 2 導入：⑤AIが④に答える
+        // ========================================
+        function showPhase2Intro() {
+            document.getElementById('phase2IntroContainer').style.display = 'block';
+            renderPhase2Intro();
+        }
+
+        function renderPhase2Intro() {
+            const session = getCurrentSession();
+            const container = document.getElementById('phase2IntroPrompt');
+            const responseContainer = document.getElementById('phase2IntroResponse');
+
+            if (!session.phase1.question) {
+                return;
+            }
+
+            if (!session.phase2Intro.phase2IntroConfirmed) {
+                // プロンプト入力モード
+                const bookContext = getBookContext();
+                const bookName = getSessionKey();
+                const prompt = `${bookContext}
+
+【ユーザーの疑問】
+"${session.phase1.question}"
+
+この疑問に対して、あなた自身の知識と思考（『${bookName}』の内容を背景としながら）で、オープンで建設的な回答をしてください。単に本の要約ではなく、疑問に対する直接的で実用的な答えを心がけてください（2〜3段落）。`;
+
+                container.innerHTML = `
+                    <div class="prompt-container">
+                        <p>📋 以下のプロンプトをコピーして、Claudianチャットに貼り付けてください：</p>
+                        <textarea class="prompt-textarea" readonly>${prompt}</textarea>
+                        <button onclick="copyToClipboard(this.previousElementSibling)">📋 プロンプトをコピー</button>
+                    </div>
+                    <div class="form-group">
+                        <p style="color: #666; font-size: 13px; margin-bottom: 10px;">Claudianの返信をここに貼り付けてください：</p>
+                        <textarea class="ai-response-input" id="phase2IntroInput" placeholder="AIの返信を貼り付けてください..."></textarea>
+                        <button onclick="confirmPhase2Intro()">✅ 回答を確定</button>
+                    </div>
+                `;
+            } else {
+                // 確定後：読み取り専用表示
+                container.innerHTML = '';
+                responseContainer.innerHTML = `
+                    <div class="response-display">
+                        <strong style="color: #667eea;">🤖 AIの回答</strong>
+                        <div style="margin-top: 10px;">${session.phase2Intro.response}</div>
+                    </div>
+                    <button onclick="editPhase2Intro()" style="margin-top: 10px;">✏️ 編集</button>
+                    <button onclick="startLooping()" style="margin-left: 10px;">➡️ MDワールドへ進む</button>
+                `;
+            }
+        }
+
+        function confirmPhase2Intro() {
+            const session = getCurrentSession();
+            const input = document.getElementById('phase2IntroInput').value.trim();
+            if (!input) {
+                alert('AIの返信を入力してください');
+                return;
+            }
+            session.phase2Intro.response = input;
+            session.phase2Intro.phase2IntroConfirmed = true;
+            saveState();
+            renderPhase2Intro();
+        }
+
+        function editPhase2Intro() {
+            const session = getCurrentSession();
+            session.phase2Intro.phase2IntroConfirmed = false;
+            saveState();
+            renderPhase2Intro();
+        }
+
+        // ========================================
+        // Phase 2: ループ開始
+        // ========================================
+        function startLooping() {
+            const session = getCurrentSession();
+            // 最初のループを追加（⑤の回答を起点）
+            addNewLoop(session.phase2Intro.response);
+        }
+
+        function addNewLoop(previousAnswer) {
+            const session = getCurrentSession();
+            const loopIndex = session.loops.length;
+            const newLoop = {
+                citation: '',
+                aiComment: '',
+                citationConfirmed: false,
+                question: '',
+                bookAnswer: '',
+                bookAnswerConfirmed: false,
+                exampleAnswer: '',
+                exampleAnswerConfirmed: false,
+                selectedAnswer: null, // 'book' or 'example'
+            };
+            session.loops.push(newLoop);
+            saveState();
+            renderLoops();
+            // 新しいループにスクロール
+            setTimeout(() => {
+                const element = document.getElementById(`cycle-${loopIndex}`);
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        // ========================================
+        // Phase 2: ループレンダリング
+        // ========================================
+        function renderLoops() {
+            const session = getCurrentSession();
+            const container = document.getElementById('loopsContainer');
+
+            if (session.loops.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = session.loops.map((loop, index) => `
+                <div class="card cycle-details" id="cycle-${index}">
+                    <details>
+                        <summary>🔄 サイクル ${index + 1}</summary>
+                        <div class="cycle-content">
+                            ${renderLoopContent(loop, index)}
+                        </div>
+                    </details>
+                </div>
+            `).join('');
+        }
+
+        function renderLoopContent(loop, loopIndex) {
+            let html = '';
+
+            // ⑥入力：引用
+            if (!loop.citationConfirmed) {
+                html += `
+                    <div class="step-card user-input">
+                        <label style="font-size: 15px;">⑥ インスパイアされた箇所を入力</label>
+                        <p style="color: #666; font-size: 13px; margin-bottom: 10px;">直前のAI回答から、心に留まった部分や、さらに詳しく知りたいと感じた内容があれば引用してください。</p>
+                        <textarea id="loop${loopIndex}Citation" placeholder="引用を入力..." value="${loop.citation}"></textarea>
+                        <button onclick="saveLoopCitation(${loopIndex})">💾 引用を保存</button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="step-card user-input">
+                        <label style="font-size: 15px;">⑥ インスパイアされた箇所</label>
+                        <div class="response-display">"${loop.citation}"</div>
+                        <button onclick="editLoopCitation(${loopIndex})">✏️ 編集</button>
+                    </div>
+                `;
+            }
+
+            // ⑦AI：コメント
+            html += renderLoopAIComment(loop, loopIndex);
+
+            // ⑧入力：疑問
+            if (!loop.citationConfirmed) {
+                html += `<div class="step-card user-input" style="opacity: 0.6; pointer-events: none;">
+                    <label>⑧ 疑問</label>
+                    <p style="color: #666; font-size: 13px;">(⑥を確定してから入力してください)</p>
+                </div>`;
+            } else if (!loop.question) {
+                html += `
+                    <div class="step-card user-input">
+                        <label style="font-size: 15px;">⑧ この引用から生じた疑問を入力</label>
+                        <textarea id="loop${loopIndex}Question" placeholder="疑問を入力..."></textarea>
+                        <button onclick="saveLoopQuestion(${loopIndex})">💾 疑問を保存</button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="step-card user-input">
+                        <label style="font-size: 15px;">⑧ 疑問</label>
+                        <div class="response-display">"${loop.question}"</div>
+                        <button onclick="editLoopQuestion(${loopIndex})">✏️ 編集</button>
+                    </div>
+                `;
+            }
+
+            // ⑨AI：本の内容ベース
+            html += renderLoopBookAnswer(loop, loopIndex);
+
+            // ⑩AI：社会事例ベース
+            html += renderLoopExampleAnswer(loop, loopIndex);
+
+            // 選択肢と次ループボタン
+            if (loop.bookAnswerConfirmed && loop.exampleAnswerConfirmed) {
+                html += `
+                    <div style="margin-top: 20px;">
+                        <p style="color: #667eea; font-weight: 600; margin-bottom: 15px;">⑪ どちらの回答を次のサイクルの起点にしますか？</p>
+                        <div class="choice-buttons">
+                            <div class="choice-button ${loop.selectedAnswer === 'book' ? 'selected' : ''}"
+                                 onclick="selectLoopAnswer(${loopIndex}, 'book')">
+                                📖 本の内容ベース<br><small>(⑨を起点に)</small>
+                            </div>
+                            <div class="choice-button ${loop.selectedAnswer === 'example' ? 'selected' : ''}"
+                                 onclick="selectLoopAnswer(${loopIndex}, 'example')">
+                                🌍 社会事例ベース<br><small>(⑩を起点に)</small>
+                            </div>
+                        </div>
+                        ${loop.selectedAnswer ? `<button onclick="continueToNextLoop(${loopIndex})" style="width: 100%; margin-top: 15px; padding: 12px; font-size: 15px;">➡️ 次のサイクルへ</button>` : ''}
+                    </div>
+                `;
+            }
+
+            return html;
+        }
+
+        // ========================================
+        // ループ ⑥: 引用
+        // ========================================
+        function saveLoopCitation(loopIndex) {
+            const session = getCurrentSession();
+            const citation = document.getElementById(`loop${loopIndex}Citation`).value.trim();
+            if (!citation) {
+                alert('引用を入力してください');
+                return;
+            }
+            session.loops[loopIndex].citation = citation;
+            session.loops[loopIndex].aiComment = '';
+            session.loops[loopIndex].citationConfirmed = true;
+            saveState();
+            renderLoops();
+        }
+
+        function editLoopCitation(loopIndex) {
+            const session = getCurrentSession();
+            session.loops[loopIndex].citationConfirmed = false;
+            saveState();
+            renderLoops();
+        }
+
+        // ========================================
+        // ループ ⑦: AIコメント
+        // ========================================
+        function renderLoopAIComment(loop, loopIndex) {
+            if (!loop.citationConfirmed) {
+                return '';
+            }
+
+            let html = '<div class="step-card ai-step">';
+            html += '<label style="font-size: 15px;">🤖 ⑦ AIが引用についてコメント</label>';
+
+            if (!loop.aiComment) {
+                const bookContext = getBookContext();
+                const prompt = `${bookContext}
+
+【ユーザーが選んだ引用文】
+"${loop.citation}"
+
+この引用について、洞察的かつ簡潔なコメント（1〜2段落）をお願いします。`;
+
+                html += `
+                    <div class="prompt-container">
+                        <p>📋 以下のプロンプトをコピーして、Claudianチャットに貼り付けてください：</p>
+                        <textarea class="prompt-textarea" readonly>${prompt}</textarea>
+                        <button onclick="copyToClipboard(this.previousElementSibling)">📋 プロンプトをコピー</button>
+                    </div>
+                    <div class="form-group">
+                        <p style="color: #666; font-size: 13px; margin-bottom: 10px;">Claudianの返信をここに貼り付けてください：</p>
+                        <textarea class="ai-response-input" id="loop${loopIndex}AIInput" placeholder="AIの返信を貼り付けてください..."></textarea>
+                        <button onclick="confirmLoopAI(${loopIndex})">✅ AIコメントを確定</button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="response-display">
+                        <strong style="color: #667eea;">🤖 AIのコメント</strong>
+                        <div style="margin-top: 10px;">${loop.aiComment}</div>
+                    </div>
+                    <button onclick="editLoopAI(${loopIndex})" style="margin-top: 10px;">✏️ 編集</button>
+                `;
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function confirmLoopAI(loopIndex) {
+            const session = getCurrentSession();
+            const input = document.getElementById(`loop${loopIndex}AIInput`).value.trim();
+            if (!input) {
+                alert('AIの返信を入力してください');
+                return;
+            }
+            session.loops[loopIndex].aiComment = input;
+            saveState();
+            renderLoops();
+        }
+
+        function editLoopAI(loopIndex) {
+            const session = getCurrentSession();
+            session.loops[loopIndex].aiComment = '';
+            saveState();
+            renderLoops();
+        }
+
+        // ========================================
+        // ループ ⑧: 疑問
+        // ========================================
+        function saveLoopQuestion(loopIndex) {
+            const session = getCurrentSession();
+            const question = document.getElementById(`loop${loopIndex}Question`).value.trim();
+            if (!question) {
+                alert('疑問を入力してください');
+                return;
+            }
+            if (!session.loops[loopIndex].aiComment) {
+                alert('先にAIコメントを確定してください');
+                return;
+            }
+            session.loops[loopIndex].question = question;
+            saveState();
+            renderLoops();
+        }
+
+        function editLoopQuestion(loopIndex) {
+            const session = getCurrentSession();
+            session.loops[loopIndex].question = '';
+            saveState();
+            renderLoops();
+        }
+
+        // ========================================
+        // ループ ⑨: 本の内容ベース回答
+        // ========================================
+        function renderLoopBookAnswer(loop, loopIndex) {
+            if (!loop.question) {
+                return '';
+            }
+
+            let html = '<div class="step-card ai-step">';
+            html += '<label style="font-size: 15px;">🤖 ⑨ AIが答える（本の内容ベース）</label>';
+
+            if (!loop.bookAnswer) {
+                const bookContext = getBookContext();
+                const bookName = getSessionKey();
+                const prompt = `${bookContext}
+
+【ユーザーの疑問】
+"${loop.question}"
+
+この疑問に対して、『${bookName}』の内容を中心に、本の中で述べられている考え方や理論に基づいた回答をしてください（2〜3段落）。`;
+
+                html += `
+                    <div class="prompt-container">
+                        <p>📋 以下のプロンプトをコピーして、Claudianチャットに貼り付けてください：</p>
+                        <textarea class="prompt-textarea" readonly>${prompt}</textarea>
+                        <button onclick="copyToClipboard(this.previousElementSibling)">📋 プロンプトをコピー</button>
+                    </div>
+                    <div class="form-group">
+                        <p style="color: #666; font-size: 13px; margin-bottom: 10px;">Claudianの返信をここに貼り付けてください：</p>
+                        <textarea class="ai-response-input" id="loop${loopIndex}BookInput" placeholder="AIの返信を貼り付けてください..."></textarea>
+                        <button onclick="confirmLoopBookAnswer(${loopIndex})">✅ 回答を確定</button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="response-display">
+                        <strong style="color: #667eea;">📖 本の内容ベース</strong>
+                        <div style="margin-top: 10px;">${loop.bookAnswer}</div>
+                    </div>
+                    <button onclick="editLoopBookAnswer(${loopIndex})" style="margin-top: 10px;">✏️ 編集</button>
+                `;
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function confirmLoopBookAnswer(loopIndex) {
+            const session = getCurrentSession();
+            const input = document.getElementById(`loop${loopIndex}BookInput`).value.trim();
+            if (!input) {
+                alert('AIの返信を入力してください');
+                return;
+            }
+            session.loops[loopIndex].bookAnswer = input;
+            session.loops[loopIndex].bookAnswerConfirmed = true;
+            saveState();
+            renderLoops();
+        }
+
+        function editLoopBookAnswer(loopIndex) {
+            const session = getCurrentSession();
+            session.loops[loopIndex].bookAnswer = '';
+            session.loops[loopIndex].bookAnswerConfirmed = false;
+            saveState();
+            renderLoops();
+        }
+
+        // ========================================
+        // ループ ⑩: 社会事例ベース回答
+        // ========================================
+        function renderLoopExampleAnswer(loop, loopIndex) {
+            if (!loop.question) {
+                return '';
+            }
+
+            let html = '<div class="step-card ai-step">';
+            html += '<label style="font-size: 15px;">🤖 ⑩ AIが答える（社会事例ベース）</label>';
+
+            if (!loop.exampleAnswer) {
+                const bookContext = getBookContext();
+                const bookName = getSessionKey();
+                const prompt = `${bookContext}
+
+【ユーザーの疑問】
+"${loop.question}"
+
+この疑問に対して、実社会の具体的な事例、企業の取り組み、個人の成功事例、統計データなどを交えた回答をしてください。『${bookName}』の理論を現代の社会・組織・個人のレベルで実装するなら、どのような形が考えられるか、という観点で答えてください（2〜3段落）。`;
+
+                html += `
+                    <div class="prompt-container">
+                        <p>📋 以下のプロンプトをコピーして、Claudianチャットに貼り付けてください：</p>
+                        <textarea class="prompt-textarea" readonly>${prompt}</textarea>
+                        <button onclick="copyToClipboard(this.previousElementSibling)">📋 プロンプトをコピー</button>
+                    </div>
+                    <div class="form-group">
+                        <p style="color: #666; font-size: 13px; margin-bottom: 10px;">Claudianの返信をここに貼り付けてください：</p>
+                        <textarea class="ai-response-input" id="loop${loopIndex}ExampleInput" placeholder="AIの返信を貼り付けてください..."></textarea>
+                        <button onclick="confirmLoopExampleAnswer(${loopIndex})">✅ 回答を確定</button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="response-display">
+                        <strong style="color: #667eea;">🌍 社会事例ベース</strong>
+                        <div style="margin-top: 10px;">${loop.exampleAnswer}</div>
+                    </div>
+                    <button onclick="editLoopExampleAnswer(${loopIndex})" style="margin-top: 10px;">✏️ 編集</button>
+                `;
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function confirmLoopExampleAnswer(loopIndex) {
+            const session = getCurrentSession();
+            const input = document.getElementById(`loop${loopIndex}ExampleInput`).value.trim();
+            if (!input) {
+                alert('AIの返信を入力してください');
+                return;
+            }
+            session.loops[loopIndex].exampleAnswer = input;
+            session.loops[loopIndex].exampleAnswerConfirmed = true;
+            saveState();
+            renderLoops();
+        }
+
+        function editLoopExampleAnswer(loopIndex) {
+            const session = getCurrentSession();
+            session.loops[loopIndex].exampleAnswer = '';
+            session.loops[loopIndex].exampleAnswerConfirmed = false;
+            saveState();
+            renderLoops();
+        }
+
+        // ========================================
+        // ループ ⑪: 選択→次ループ
+        // ========================================
+        function selectLoopAnswer(loopIndex, answer) {
+            const session = getCurrentSession();
+            session.loops[loopIndex].selectedAnswer = answer;
+            saveState();
+            renderLoops();
+        }
+
+        function continueToNextLoop(loopIndex) {
+            const session = getCurrentSession();
+            const loop = session.loops[loopIndex];
+            if (!loop.selectedAnswer) {
+                alert('どちらかを選択してください');
+                return;
+            }
+            const selectedResponse = loop.selectedAnswer === 'book' ? loop.bookAnswer : loop.exampleAnswer;
+            addNewLoop(selectedResponse);
+        }
+
+        // ========================================
+        // ユーティリティ
+        // ========================================
+        function copyToClipboard(element) {
+            const text = element.value;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = element.nextElementSibling;
+                const origText = btn.textContent;
+                btn.textContent = '✅ コピーしました！';
+                setTimeout(() => {
+                    btn.textContent = origText;
+                }, 2000);
+            }).catch(err => {
+                alert('コピーに失敗しました: ' + err);
+            });
+        }
+
+        // ========================================
+        // エクスポート機能
+        // ========================================
+        function generateMarkdown() {
+            const session = getCurrentSession();
+            const bookName = getSessionKey();
+            const today = new Date();
+            const dateStr = today.toISOString().split('T')[0];
+            const timeStr = today.toTimeString().split(' ')[0];
+
+            let md = `---
+title: ${bookName} 読解学習記録_${String(session.recordNumber).padStart(3, '0')}
+created: ${dateStr}T${timeStr}
+book: "${bookName}"
+tags:
+  - 読解
+  - MDワールド
+  - 読解学習記録
+method: New Treasure×MDワールド式読解法
+---
+
+# ${bookName} 読解学習記録
+
+**記録番号**: ${String(session.recordNumber).padStart(3, '0')}
+**作成日**: ${dateStr}
+**書籍**: ${bookName}
+**方法**: New Treasure×MDワールド式読解法（Claudianとの対話を通じた読書解釈）
+
+---
+
+## Phase 1: 導入
+
+### ② インスパイアされた箇所
+
+> ${session.phase1.citation || '（未入力）'}
+
+### ③ AIが引用についてコメント
+
+${session.phase1.aiComment ? session.phase1.aiComment : '（未確定）'}
+
+### ④ 生じた疑問
+
+> ${session.phase1.question || '（未入力）'}
+
+### ⑤ 疑問への回答（オープン回答）
+
+${session.phase2Intro.response ? session.phase2Intro.response : '（未確定）'}
+
+---
+
+## Phase 2: MDワールド
+
+`;
+
+            session.loops.forEach((loop, index) => {
+                md += `
+### サイクル ${index + 1}
+
+#### ⑥ インスパイアされた箇所
+
+> ${loop.citation || '（未入力）'}
+
+#### ⑦ AIのコメント
+
+${loop.aiComment || '（未確定）'}
+
+#### ⑧ 疑問
+
+> ${loop.question || '（未入力）'}
+
+#### ⑨ 回答（本の内容ベース）
+
+**📖 本の内容を中心に：**
+
+${loop.bookAnswer || '（未確定）'}
+
+#### ⑩ 回答（社会事例ベース）
+
+**🌍 社会の実装例を中心に：**
+
+${loop.exampleAnswer || '（未確定）'}
+
+---
+`;
+            });
+
+            md += `
+## 学習記録
+
+- **Phase 1 完了**: ${session.phase1.question ? '✓' : '✗'}
+- **Phase 2 導入完了**: ${session.phase2Intro.response ? '✓' : '✗'}
+- **ループ数**: ${session.loops.length}
+- **最後に編集**: ${dateStr} ${timeStr}
+`;
+
+            return md;
+        }
+
+        function exportToClipboard() {
+            const md = generateMarkdown();
+            navigator.clipboard.writeText(md).then(() => {
+                alert('Markdownをクリップボードにコピーしました！\n\nObsidianで新しいノートを作成して、ペーストしてください。');
+            }).catch(err => {
+                alert('コピーに失敗しました: ' + err);
+            });
+        }
+
+        function downloadMarkdown() {
+            const session = getCurrentSession();
+            const md = generateMarkdown();
+            const bookName = getSessionKey();
+            const recordNum = String(session.recordNumber).padStart(3, '0');
+            const filename = `${bookName}_読解学習記録_${recordNum}.md`;
+
+            const blob = new Blob([md], { type: 'text/markdown; charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        }
+
+        // ========================================
+        // リセット
+        // ========================================
+        function resetAll() {
+            if (confirm('現在の書籍（' + getSessionKey() + '）の学習記録をリセットします。本当にいいですか？')) {
+                const session = getCurrentSession();
+                session.phase1 = {
+                    citation: '',
+                    aiComment: '',
+                    question: '',
+                    phase1AIConfirmed: false,
+                };
+                session.phase2Intro = {
+                    response: '',
+                    phase2IntroConfirmed: false,
+                };
+                session.loops = [];
+                session.recordNumber += 1; // 次の記録番号に進める
+                saveState();
+                renderAll();
+                alert('学習記録がリセットされました。次の記録番号は ' + String(session.recordNumber).padStart(3, '0') + ' です。');
+            }
+        }
+
+        // ========================================
+        // 全体レンダリング
+        // ========================================
+        function renderAll() {
+            const session = getCurrentSession();
+            document.getElementById('phase1Citation').value = session.phase1.citation;
+            document.getElementById('phase1Question').value = session.phase1.question;
+            renderPhase1AI();
+            if (session.phase1.question && session.phase1.phase1AIConfirmed) {
+                showPhase2Intro();
+            }
+            renderLoops();
+        }
+
+        // ========================================
+        // 初期化
+        // ========================================
+        window.addEventListener('DOMContentLoaded', loadState);
+    </script>
+</body>
+</html>
